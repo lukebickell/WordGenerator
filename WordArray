@@ -1,0 +1,112 @@
+import java.util.ArrayList;
+import java.util.Comparator;
+public class WordArray 
+{
+	private ArrayList<String> wordArray = new ArrayList<String>();
+	
+	//Constructors
+	
+	public WordArray(){}
+	
+	public WordArray(ArrayList<String> sArray)
+	{
+		this.wordArray = sArray;
+	}
+	
+	public WordArray(String[] array)
+	{
+		for (String word: array)
+			wordArray.add(word);
+	}
+	
+	public WordArray(WordArray wa)
+	{
+		this.wordArray = wa.wordArray;
+	}
+	
+	//Methods
+	
+	public void alphabetize()
+	{
+		java.util.Collections.sort(wordArray);
+	}
+	
+	public void reverse()
+	{
+		java.util.Collections.reverse(wordArray);
+	}
+	
+	public void scramble()
+	{
+		for (int i = 0; i< this.wordArray.size()-1 ;i++)
+		{
+			int randnum = UT.randInt(0, this.wordArray.size()-1);
+			this.add(this.wordArray.remove(randnum));
+		}
+	}
+	
+	public void sortByLength()
+	{
+		class comp implements Comparator<String> 
+		{
+			public int compare(String o1, String o2) 
+			{
+				return Integer.compare(o1.length(), o2.length());
+			}
+		}
+		java.util.Collections.sort(wordArray, new comp());
+	}
+	
+	public void add(String word)
+	{
+		wordArray.add(word);
+	}
+	
+	public void combine(ArrayList<String> array)
+	{
+		for (String word: array)
+			wordArray.add(word);
+	}
+	
+	public void combine(String[] array)
+	{
+		for (String word: array)
+			wordArray.add(word);
+	}
+	
+	public ArrayList<String> getWordArray()
+	{
+		return wordArray;
+	}
+	
+	public void setWordArray(ArrayList<String> array)
+	{
+		wordArray = array;
+	}
+	
+	public String[] toArray()
+	{
+		int length = wordArray.size();
+		String[] array = new String[length];
+		for (int i = 0; i<length; i++)
+			array[i] = wordArray.get(i);
+		return array;
+	}
+	
+	public int[] toIntArray()
+	{
+		int length = wordArray.size();
+		int[] array = new int[length];
+		for (int i = 0; i<length; i++)
+			array[i] = wordArray.get(i).length();
+		return array;
+	}
+	
+	public String toString()
+	{
+		String result = "";
+		for (String word : wordArray)
+			result+= word+"\n";
+		return result;
+	}
+}
