@@ -1,0 +1,19 @@
+public class InterfaceMethods 
+{
+	public static WordArray WORDARRAY;
+	public static boolean startingLetter;
+	public static Generator generator = new Generator();
+	public static int exactLength;
+
+	public static WordArray generateWords(int number, Generator gen)
+	{
+		WordArray wa = new WordArray();
+		for (int i = 0; i< number; i++)
+		{
+			String w = gen.randWord();
+			wa.add(w);
+		}
+		return wa;
+	}
+
+}
