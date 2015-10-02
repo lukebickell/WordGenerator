@@ -1,0 +1,209 @@
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Spinner;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.wb.swt.SWTResourceManager;
+import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.ModifyEvent;
+
+public class WordGUI {
+
+	protected Shell shlWordGenerator;
+	private Text text;
+
+	/**
+	 * Launch the application.
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		try {
+			WordGUI window = new WordGUI();
+			window.open();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Open the window.
+	 */
+	public void open() {
+		Display display = Display.getDefault();
+		createContents();
+		shlWordGenerator.open();
+		shlWordGenerator.layout();
+		while (!shlWordGenerator.isDisposed()) {
+			if (!display.readAndDispatch()) {
+				display.sleep();
+			}
+		}
+	}
+
+	/**
+	 * Create contents of the window.
+	 */
+	protected void createContents() {
+		shlWordGenerator = new Shell();
+		shlWordGenerator.setSize(450, 250);
+		shlWordGenerator.setText("Word Generator");
+		
+		Label label = new Label(shlWordGenerator, SWT.SEPARATOR | SWT.VERTICAL);
+		label.setBounds(318, 13, 2, 180);
+		
+		Spinner spinner = new Spinner(shlWordGenerator, SWT.BORDER);
+		spinner.setMaximum(25);
+		spinner.setSelection(1);
+		spinner.setBounds(133, 10, 51, 26);
+		
+		Label lblEnterOf = new Label(shlWordGenerator, SWT.NONE);
+		lblEnterOf.setBounds(10, 13, 124, 20);
+		lblEnterOf.setText("Enter # of words: ");
+		
+		StyledText styledText = new StyledText(shlWordGenerator, SWT.BORDER);
+		styledText.setForeground(SWTResourceManager.getColor(0, 0, 0));
+		styledText.setEditable(false);
+		styledText.setBounds(326, 10, 96, 183);
+		
+		//Generate Words
+		Button btnNewButton = new Button(shlWordGenerator, SWT.NONE);
+		btnNewButton.setFont(SWTResourceManager.getFont("Segoe UI", 7, SWT.BOLD));
+		btnNewButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseUp(MouseEvent e) {
+				InterfaceMethods.WORDARRAY = InterfaceMethods.generateWords(spinner.getSelection(), InterfaceMethods.generator);
+				styledText.setText(InterfaceMethods.WORDARRAY.toString());
+			}
+		});
+		
+
+		btnNewButton.setTextDirection(33554);
+		btnNewButton.setBounds(190, 10, 70, 26);
+		btnNewButton.setText("GENERATE");
+		
+		//Alphabetize
+		Button btnAlphabetize = new Button(shlWordGenerator, SWT.NONE);
+		btnAlphabetize.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseUp(MouseEvent e) {
+				if (!styledText.getText().isEmpty())
+				{
+					InterfaceMethods.WORDARRAY.alphabetize();
+					styledText.setText(InterfaceMethods.WORDARRAY.toString());
+				}
+			}
+		});
+		btnAlphabetize.setBounds(10, 127, 90, 30);
+		btnAlphabetize.setText("Alphabetize");
+		
+		//Reverse
+		Button btnReverse = new Button(shlWordGenerator, SWT.NONE);
+		btnReverse.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseUp(MouseEvent e) {
+				InterfaceMethods.WORDARRAY.reverse();
+				styledText.setText(InterfaceMethods.WORDARRAY.toString());
+			}
+		});
+		
+		btnReverse.setBounds(10, 163, 90, 30);
+		btnReverse.setText("Reverse");
+		
+		//Scramble
+		Button btnScramble = new Button(shlWordGenerator, SWT.NONE);
+		btnScramble.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseUp(MouseEvent e) {
+				InterfaceMethods.WORDARRAY.scramble();
+				styledText.setText(InterfaceMethods.WORDARRAY.toString());
+			}
+		});
+		btnScramble.setBounds(106, 163, 90, 30);
+		btnScramble.setText("Scramble");
+		
+		//Starting Letter check
+		Button btnStartingLetter = new Button(shlWordGenerator, SWT.CHECK);
+		btnStartingLetter.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseUp(MouseEvent e) {
+				if (btnStartingLetter.getSelection())
+				{
+					InterfaceMethods.generator.setIsStartLtr(true);
+				}
+				else
+				{
+					InterfaceMethods.generator.setIsStartLtr(false);
+					text.setText("");
+				}
+
+			}
+		});
+		btnStartingLetter.setBounds(10, 42, 124, 20);
+		btnStartingLetter.setText("Starting Letter:");
+		
+		//Starting Letter text
+		text = new Text(shlWordGenerator, SWT.BORDER);
+		text.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent arg0) {
+				if (text.getText().length()>1)
+					text.setText("");
+				else if (btnStartingLetter.getSelection())
+					InterfaceMethods.generator.setIsStartLtr(true);
+				
+				InterfaceMethods.generator.setStartingLetter(text.getText());
+			}
+		});
+		text.setBounds(143, 42, 24, 24);
+		
+		//By Length
+		Button btnByLength = new Button(shlWordGenerator, SWT.NONE);
+		btnByLength.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseUp(MouseEvent e) {
+				InterfaceMethods.WORDARRAY.sortByLength();
+				styledText.setText(InterfaceMethods.WORDARRAY.toString());
+			}
+		});
+		btnByLength.setBounds(106, 127, 90, 30);
+		btnByLength.setText("By Length");
+		
+		//Exact Length Check
+		Button btnExactLength = new Button(shlWordGenerator, SWT.CHECK);
+		btnExactLength.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseUp(MouseEvent e) {
+				if (btnExactLength.getSelection())
+				{
+					InterfaceMethods.generator.setIsExactLength(true);
+					
+				}
+				else
+				{
+					InterfaceMethods.generator.setIsExactLength(false);
+				}
+			}
+		});
+		btnExactLength.setBounds(10, 71, 111, 20);
+		btnExactLength.setText("Exact Length:");
+		
+		//Exact Length
+		Spinner spinner_1 = new Spinner(shlWordGenerator, SWT.BORDER);
+		spinner_1.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent arg0) {
+				if (spinner_1.getSelection() == 0)
+					spinner_1.setSelection(1);
+				
+				InterfaceMethods.generator.setExactLength(spinner_1.getSelection());
+			}
+		});
+		spinner_1.setSelection(1);
+		spinner_1.setBounds(133, 68, 51, 26);
+		
+
+	}
+}
